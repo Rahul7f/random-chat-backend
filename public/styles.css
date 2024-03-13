@@ -1,0 +1,7 @@
+#messages {
+    overflow-y: scroll;
+    max-height: 300px;
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin-bottom: 10px;
+}

@@ -2,6 +2,9 @@
 const express = require("express");
 const http = require("http");
 const socketIo = require("socket.io");
+var path = require("path");
+const bodyParser = require("body-parser");
+
 
 const app = express();
 const server = http.createServer(app);
@@ -13,6 +16,19 @@ const PORT = process.env.PORT || 3000;
 let connectedUsers = [];
 
 app.use(express.static("public"));
+app.use(bodyParser.urlencoded({ extended: true }));
+
+app.get("/", (req, res) => {
+
+  res.sendFile(path.join(__dirname, "public", "index.html"));
+});
+
+app.get("/chat", (req, res) => {
+   console.log(req.query);
+  res.sendFile(path.join(__dirname, "public", "chat.html"));
+  
+});
+
 // Socket.io logic
 io.on("connection", (socket) => {
   console.log("New client connected",socket.id);

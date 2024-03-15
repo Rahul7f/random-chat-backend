@@ -29,16 +29,10 @@ io.on("connection", (socket) => {
   });
 
   // Handle disconnection
-  socket.on("disconnect", () => {
-    console.log("Client disconnected");
-    // Remove the disconnected user from connectedUsers array
-    connectedUsers = connectedUsers.filter((user) => user !== socket.id);
-    // Notify the remaining user if their partner left
-    if (connectedUsers.length === 1) {
-      const remainingUserId = connectedUsers[0];
-      console.log("partner left from app");
-      io.to(remainingUserId).emit("partnerLeft");
-    }
+  socket.on("disconnect", (data) => {
+    console.log("Disconnect",data);
+
+
   });
 
 

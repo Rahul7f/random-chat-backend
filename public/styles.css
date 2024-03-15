@@ -5,3 +5,12 @@
     padding: 10px;
     margin-bottom: 10px;
 }
+.container{
+    margin: 2px;
+    background-color: #573f3f;
+
+}
+
+section {
+    display: block;
+  }

@@ -11,6 +11,13 @@ var recipient = "";
 var recipientName = "";
 var currentUserName = "";
 
+// if user close tab, then exit the user session
+window.addEventListener("beforeunload", function (e) {
+  console.log("exit");
+  socket.emit("exit", recipient);
+  
+});
+
 socket.on("connect", () => {
   changeStatus("connected");
 });
@@ -59,8 +66,11 @@ try {
 
 // Attach click event listener to the send button
 sendButton.addEventListener("click", function () {
-  console.log("sendButton clicked");
-  sendMessage();
+  SnackBar({
+    message: "Do <em>NOT</em> do that again",
+  });
+  // console.log("sendButton clicked");
+  // sendMessage();
 });
 
 // Attach click event listener to the exit button

@@ -1,84 +1,98 @@
 nav {
-    height: 5%;
-
+  height: 5%;
+}
+body {
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  background-image: url(../assets/bg-chat2.jpg);
 }
 
 .message-container {
-    display: flex;
-    margin-bottom: 10px;
-    /* Adjust the margin between chat bubbles */
+  display: flex;
+  margin-bottom: 10px;
+  /* Adjust the margin between chat bubbles */
 }
 
 .selfmessage {
-    margin-left: auto;
-    /* Push message to the right */
-    margin-right: 10px;
-    background-color: #add8e6;
-    /* Change the background color of the chat bubble */
-    border-radius: 10px;
-    /* Add rounded corners to the chat bubble */
-    border-bottom-right-radius: 0;
-    /* Adjust border radius to have a smooth edge */
-    padding-left: 10px;
-    padding-right: 10px;
-    max-width: 70%;
-    /* Limit the width of the chat bubble */
+  margin-left: auto;
+  /* Push message to the right */
+  margin-right: 10px;
+  background-color: #add8e6;
+  /* Change the background color of the chat bubble */
+  border-radius: 10px;
+  /* Add rounded corners to the chat bubble */
+  border-bottom-right-radius: 0;
+  /* Adjust border radius to have a smooth edge */
+  padding-left: 10px;
+  padding-right: 10px;
+  max-width: 70%;
+  /* Limit the width of the chat bubble */
 }
 
 .othermessage {
-    margin-right: auto;
-    /* Push message to the left */
-    margin-left: 10px;
-    background-color: #add8e6;
-    /* Change the background color of the chat bubble */
-    border-radius: 10px;
-    /* Add rounded corners to the chat bubble */
-    border-bottom-left-radius: 0;
-    /* Adjust border radius to have a smooth edge */
-    padding-left: 10px;
-    padding-right: 10px;
-    padding-bottom: 5px;
-    max-width: 70%;
-    /* Limit the width of the chat bubble */
+  margin-right: auto;
+  /* Push message to the left */
+  margin-left: 10px;
+  background-color: #add8e6;
+  /* Change the background color of the chat bubble */
+  border-radius: 10px;
+  /* Add rounded corners to the chat bubble */
+  border-bottom-left-radius: 0;
+  /* Adjust border radius to have a smooth edge */
+  padding-left: 10px;
+  padding-right: 10px;
+  padding-bottom: 5px;
+  max-width: 70%;
+  /* Limit the width of the chat bubble */
 }
 
-
 .input-custom {
-    margin: 5px;
-    /* Add margin */
+  margin: 5px;
+  /* Add margin */
 }
 
 /* Custom button color */
 .btn-custom {
-    background-color: #EADFB4;
-    border-color: #EADFB4;
-    margin: 5px;
-    /* Add margin */
-    border-radius: 0;
-    /* Make button more rectangular */
-    padding: 8px 16px;
-    /* Adjust padding */
+  background-color: #eadfb4;
+  border-color: #eadfb4;
+  margin: 5px;
+  /* Add margin */
+  border-radius: 0;
+  /* Make button more rectangular */
+  padding: 8px 16px;
+  /* Adjust padding */
 }
 
 .btn-custom:hover {
-    background-color: #D9CF97;
-    border-color: #D9CF97;
+  background-color: #d9cf97;
+  border-color: #d9cf97;
 }
 .btn {
-background-color: DodgerBlue;
-border: none;
-color: white;
-padding: 12px 16px;
-font-size: 16px;
-
+  background-color: DodgerBlue;
+  border: none;
+  color: white;
+  padding: 12px 16px;
+  font-size: 16px;
 }
 .btn:hover {
-background-color: RoyalBlue;
+  background-color: RoyalBlue;
 }
 
 .navbar-brand img {
-    height: 40px;
-    /* Set the height of the logo */
-    margin-right: 10px;
-    /* Add some spacing between the logo and text */
+  height: 40px;
+  /* Set the height of the logo */
+  margin-right: 10px;
+  /* Add some spacing between the logo and text */
+}
+
+.centerDiv {
+  background-color: #ffff;
+  opacity: 0.7;
+  width: 70%;
+  padding-top: 20px;
+  height: 90%;
+  margin: auto;
+  display: flex;
+  flex-direction: column;
 }

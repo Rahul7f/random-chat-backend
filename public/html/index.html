@@ -1,43 +1,46 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Stranger Chat</title>
-<link rel="stylesheet" href="../css/styles.css">
-</head>
-<body style="background-color: #FEECE2;">
-
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Stranger Chat</title>
+    <link rel="stylesheet" href="../css/styles.css" />
+  </head>
+  <body style="background-color: #feece2">
     <div class="heading">
-        <h3>Online User 3439</h3>
-        <p>Status</p>
+      <h3>Online User 3439</h3>
+      <p>Status</p>
     </div>
 
+    <div class="container">
+      <h2>Stranger Chat</h2>
+      <form id="registrationForm">
+        <input
+          type="text"
+          id="name"
+          name="name"
+          placeholder="Enter your name"
+          required
+        /><br />
 
-    <div class="container" >
-        <h2>Stranger Chat</h2>
-        <form id="registrationForm">
-            <input type="text" id="name" name="name" placeholder="Enter your name" required><br>
-           
-            <select id="gender" name="gender" required>
-                <option value="" disabled selected>Select your gender</option>
-                <option value="male">Male</option>
-                <option value="female">Female</option>
-                <option value="other">Other</option>
-            </select><br>
-         
-            <select id="intrest" name="gender" required>
-                <option value="" disabled selected>Select your Intrest</option>
-                <option value="male">Male</option>
-                <option value="female">Female</option>
-                <option value="other">Other</option>
-            </select><br>
-            
-            <input type="submit" value="Chat">
-        </form>
+        <select id="gender" name="gender" required>
+          <option value="" disabled selected>Select your gender</option>
+          <option value="male">Male</option>
+          <option value="female">Female</option>
+          <option value="other">Other</option></select
+        ><br />
+
+        <select id="intrest" name="gender" required>
+          <option value="" disabled selected>Select your Intrest</option>
+          <option value="male">Male</option>
+          <option value="female">Female</option>
+          <option value="other">Other</option></select
+        ><br />
+
+        <input type="submit" value="Chat" />
+      </form>
     </div>
 
     <script src="../js/index.js"></script>
-
-</body>
+  </body>
 </html>

@@ -65,7 +65,6 @@ try {
 
 // Attach click event listener to the send button
 sendButton.addEventListener("sendButton", function () {
-
   console.log("sendButton clicked");
   sendMessage();
 });
@@ -87,7 +86,6 @@ camera.addEventListener("camera", function () {
     },
     onClick: function () {}, // Callback after click
   }).showToast();
-  
 });
 
 // Attach click event listener to the exit button

@@ -11,9 +11,14 @@
     <!-- <link rel="stylesheet" href="styles.css"> -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+
+
     <style>
         nav {
-            height: 10%;
+            height: 5%;
+        
         }
 
         .message-container {
@@ -77,6 +82,17 @@
             background-color: #D9CF97;
             border-color: #D9CF97;
         }
+        .btn {
+  background-color: DodgerBlue;
+  border: none;
+  color: white;
+  padding: 12px 16px;
+  font-size: 16px;
+  
+}
+.btn:hover {
+  background-color: RoyalBlue;
+}
 
         .navbar-brand img {
             height: 40px;
@@ -87,20 +103,12 @@
     </style>
 </head>
 
-<body style="height: 100%; width: 100%; margin: 0; background-image: url(bg.jpg);">
+<body style="height: 100%; width: 100%; margin: 0; background-image: url(bg-chat2.jpg);">
 
-    <nav class="navbar navbar-expand-lg bg-body-tertiary">
-        <div class="container-fluid justify-content-center" style="background-color: #EADFB400;">
-            <!-- Added background color to navbar -->
-            <a class="navbar-brand" href="#">
-                <img src="icon.png" alt="Logo"> <!-- Add your logo image here -->
-                Fun With Strangers
-            </a>
-        </div>
-    </nav>
+    
 
     <div
-        style="background-color: #9BB0C1ee; width: 70%; padding-top: 20px; height: 90%; margin: auto; display: flex; flex-direction: column;">
+        style="background-color: #ffff; opacity: 0.7; width: 70%; padding-top: 20px; height: 90%; margin: auto; display: flex; flex-direction: column;">
 
         <!-- <h2 id="status">Connecting to Server</h2> -->
 
@@ -125,18 +133,22 @@
         </div>
 
         <div style="display: flex;">
-            <button id="connect" class="btn btn-custom">connect</button>
+            <button id="esc" class="btn btn-custom">ESC</button>
 
             <input class="input-custom" style="flex-grow: 1;" id="messageInput" type="text"
                 placeholder="Type your message...">
 
+                
+            <button id="camera"class="btn btn-custom"><i class="fas fa-camera"></i></button>
+
             <button id="sendButton" class="btn btn-custom">Send</button>
 
-            <button id="exitUser" class="btn btn-custom">exit</button>
+           
         </div>
     </div>
 
     <script src="/socket.io/socket.io.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
     <script src="client.js"></script>
 </body>
 

@@ -4,8 +4,8 @@ var nameField = document.getElementById("nameInput");
 var messageListDiv = document.getElementById("messages");
 var messageField = document.getElementById("messageInput");
 var sendButton = document.getElementById("sendButton");
-var exitButton = document.getElementById("exitUser");
-var connectButton = document.getElementById("connect");
+var toggleConnectionButton = document.getElementById("esc");
+var camera = document.getElementById("camera");
 
 var recipient = "";
 var recipientName = "";
@@ -15,7 +15,6 @@ var currentUserName = "";
 window.addEventListener("beforeunload", function (e) {
   console.log("exit");
   socket.emit("exit", recipient);
-
 });
 
 socket.on("connect", () => {
@@ -33,7 +32,7 @@ socket.on("partnerLeft", () => {
 
 // Receive message from server and display it
 socket.on("message", (data) => {
-  addMessage(recipientName, data.message,false);
+  addMessage(recipientName, data.message, false);
 });
 
 // Function to send message to server
@@ -45,13 +44,13 @@ function sendMessage() {
       message: message,
       sender: socket.id,
     });
-    addMessage("You", message,true);
+    addMessage("You", message, true);
     messageInput.value = "";
   }
 }
 
 // Function to send message to server
-function exitUser() { }
+function exitUser() {}
 
 // Function to handle pressing Enter key to send message
 try {
@@ -65,23 +64,39 @@ try {
 }
 
 // Attach click event listener to the send button
-sendButton.addEventListener("click", function () {
-  SnackBar({
-    message: "Do <em>NOT</em> do that again",
-  });
-  // console.log("sendButton clicked");
-  // sendMessage();
+sendButton.addEventListener("sendButton", function () {
+
+  console.log("sendButton clicked");
+  sendMessage();
+});
+
+// Attach click event listener to the send button
+camera.addEventListener("camera", function () {
+  console.log("sendButton clicked");
+  Toastify({
+    text: "This is a toast",
+    duration: 3000,
+    destination: "https://github.com/apvarun/toastify-js",
+    newWindow: true,
+    close: true,
+    gravity: "top", // `top` or `bottom`
+    position: "left", // `left`, `center` or `right`
+    stopOnFocus: true, // Prevents dismissing of toast on hover
+    style: {
+      background: "linear-gradient(to right, #00b09b, #96c93d)",
+    },
+    onClick: function () {}, // Callback after click
+  }).showToast();
+  
 });
 
 // Attach click event listener to the exit button
-exitButton.addEventListener("click", function () {
+toggleConnectionButton.addEventListener("esc", function () {
   console.log("exit");
   socket.emit("exit", recipient);
 });
 
-// Attach click event listener to connect button
-
-connectButton.addEventListener("click", function () {
+function connect(user) {
   console.log("connect clicked");
   const messageInput = nameField.value.trim();
   console.log(messageInput == "", messageInput);
@@ -95,24 +110,24 @@ connectButton.addEventListener("click", function () {
   nameField.value = "";
   nameField.style.visibility = "hidden";
   connectButton.style.visibility = "hidden";
-});
+}
 
 function changeStatus(status) {
   statusHeading.innerText = status;
 }
 
 function addMessage(name, text, isSelf) {
-  const messageContainer = document.createElement('div');
-  messageContainer.className = 'message-container';
+  const messageContainer = document.createElement("div");
+  messageContainer.className = "message-container";
 
-  const message = document.createElement('div');
-  message.className = isSelf ? 'selfmessage' : 'othermessage';
+  const message = document.createElement("div");
+  message.className = isSelf ? "selfmessage" : "othermessage";
 
-  const strongElement = document.createElement('strong');
+  const strongElement = document.createElement("strong");
   strongElement.textContent = name;
-  strongElement.style.fontSize = '10px';
+  strongElement.style.fontSize = "10px";
 
-  const brElement = document.createElement('br');
+  const brElement = document.createElement("br");
 
   const textNode = document.createTextNode(text);
 
@@ -121,5 +136,5 @@ function addMessage(name, text, isSelf) {
   message.appendChild(textNode);
 
   messageContainer.appendChild(message);
-  document.getElementById('messages').appendChild(messageContainer);
+  document.getElementById("messages").appendChild(messageContainer);
 }

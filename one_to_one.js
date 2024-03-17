@@ -46,6 +46,9 @@ io.on("connection", (socket) => {
   });
 
   socket.on("userConnectRequest", (data) => {
+
+    
+
     // Add user to connectedUsers array
     console.log("Adding user to connectedUsers, " + JSON.stringify(data));
 

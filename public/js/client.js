@@ -6,20 +6,43 @@ var messageField = document.getElementById("messageInput");
 var sendButton = document.getElementById("sendButton");
 var toggleConnectionButton = document.getElementById("esc");
 var camera = document.getElementById("camera");
+var centerDiv = document.getElementById("center");
 
 var recipient = "";
 var recipientName = "";
 var currentUserName = "";
 var myData = null;
 
-
-
-
 // if user close tab, then exit the user session
 window.addEventListener("beforeunload", function (e) {
   console.log("exit");
   socket.emit("exit", recipient);
 });
+
+
+resize();
+
+// Attach an event listener to the window resize event
+window.addEventListener("resize", function () {
+  // Call checkScreenType() when the window is resized
+  resize();
+});
+
+function resize() {
+  const screenWidth = window.innerWidth;
+
+  const isMobile = screenWidth < 768;
+
+  if (isMobile) {
+    centerDiv.classList.remove("center");
+    centerDiv.classList.add("centerphone");
+  } else {
+    console.log("This is a web device.");
+
+    centerDiv.classList.remove("centerphone");
+    centerDiv.classList.add("center");
+  }
+}
 
 socket.on("connect", () => {
   changeStatus("connected");
@@ -34,10 +57,9 @@ socket.on("connect", () => {
     const end = cookieString.lastIndexOf("}") + 1;
     const jsonValue = cookieString.substring(start, end);
     const jsonObject = JSON.parse(jsonValue);
-    jsonObject.id =socket.id;
+    jsonObject.id = socket.id;
     myData = jsonObject;
-    connect(jsonObject)
-    
+    connect(jsonObject);
   } else {
     console.log("No cookies found");
   }
@@ -71,11 +93,6 @@ function sendMessage() {
   }
 }
 
-// Function to send message to server
-function exitUser() {
-
-}
-
 // Function to handle pressing Enter key to send message
 try {
   messageField.addEventListener("keyup", function (event) {
@@ -95,25 +112,22 @@ sendButton.addEventListener("click", function () {
 
 // Attach click event listener to the send button
 camera.addEventListener("click", function () {
- showMessage("COMMING SOON! ");
-  
+  showMessage("COMMING SOON! ");
 });
 
 // Attach click event listener to the exit button
 toggleConnectionButton.addEventListener("click", function () {
-  if(recipient){
+  if (recipient) {
     console.log("exit");
     socket.emit("exit", recipient);
     recipient = null;
     recipientName = null;
     toggleConnectionButton.innerText = "New";
-  }else{
+  } else {
     connect(myData);
     toggleConnectionButton.innerText = "ESC";
   }
-  
 });
-
 
 function showMessage(recipient) {
   Toastify({
@@ -133,7 +147,7 @@ function showMessage(recipient) {
 }
 
 function connect(user) {
-  socket.emit("userConnectRequest",user);
+  socket.emit("userConnectRequest", user);
   changeStatus("finding User...");
   currentUserName = messageInput;
   console.log(user);
@@ -163,5 +177,6 @@ function addMessage(name, text, isSelf) {
   message.appendChild(textNode);
 
   messageContainer.appendChild(message);
-  document.getElementById("messages").appendChild(messageContainer);
+  messageListDiv.appendChild(messageContainer);
+  messageListDiv.scrollTop = messageListDiv.scrollHeight;
 }

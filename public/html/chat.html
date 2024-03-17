@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en" style="height: 100%; width: 100%;">
+
+<head>
+    <title>Fun with Strangers</title>
+    <link rel="icon" type="image/x-icon" href="favicon.png">
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>test1</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+
+
+    <link rel="stylesheet" href="../css/chat.css">
+</head>
+
+<body style="height: 100%; width: 100%; margin: 0; background-image: url(../assets/bg-chat2.jpg);">
+
+    
+
+    <div
+        style="background-color: #ffff; opacity: 0.7; width: 70%; padding-top: 20px; height: 90%; margin: auto; display: flex; flex-direction: column;">
+
+        <!-- <h2 id="status">Connecting to Server</h2> -->
+
+        <div id="messages" style="flex-grow: 1; overflow: auto;">
+            <div style="text-align: center; ">
+                <strong id="status" style=" margin: auto; width: fit-content;">status</strong>
+            </div>
+            <div class="message-container">
+                <div class="selfmessage">
+
+                    <strong style="font-size: 10px;">aadrsh</strong><br>
+                    I am Aadrsh Bajpai
+                </div>
+            </div>
+
+            <div class="message-container">
+                <div class="othermessage">
+                    <strong style="font-size: 10px;">rahul</strong><br>
+                    Hii Aadrsh I am Rahul
+                </div>
+            </div>
+        </div>
+
+        <div style="display: flex;">
+            <button id="esc" class="btn btn-custom">ESC</button>
+
+            <input class="input-custom" style="flex-grow: 1;" id="messageInput" type="text"
+                placeholder="Type your message...">
+
+                
+            <button id="camera"class="btn btn-custom"><i class="fas fa-camera"></i></button>
+
+            <button id="sendButton" class="btn btn-custom">Send</button>
+
+           
+        </div>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+    <script src="../js/client.js"></script>
+</body>
+
+</html>

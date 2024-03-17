@@ -19,13 +19,15 @@ app.use(express.static("public"));
 app.use(bodyParser.urlencoded({ extended: true }));
 
 app.get("/", (req, res) => {
+   console.log(path.join(__dirname, "public/html", "chat.html"));
 
-  res.sendFile(path.join(__dirname, "public", "index.html"));
+  res.sendFile(path.join(__dirname, "public/html", "index.html"));
 });
 
 app.get("/chat", (req, res) => {
-   console.log(req.query);
-  res.sendFile(path.join(__dirname, "public", "chat.html"));
+ console.log(req.query);
+ console.log(path.join(__dirname, "public/html", "chat.html"));
+  res.sendFile(path.join(__dirname, "public/html", "chat.html"));
   
 });
 

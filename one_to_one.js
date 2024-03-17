@@ -89,7 +89,7 @@ io.on("connection", (socket) => {
 
 function findCompatiblePartner(newUser) {
   for (const user of connectedUsers) {
-    if (user.gender !== newUser.gender && user.interest === newUser.gender) {
+    if (user.interest === newUser.gender && newUser.interest === user.interest) {
       return user;
     }
   }

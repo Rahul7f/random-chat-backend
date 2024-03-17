@@ -64,37 +64,42 @@ try {
 }
 
 // Attach click event listener to the send button
-sendButton.addEventListener("sendButton", function () {
+sendButton.addEventListener("click", function () {
   console.log("sendButton clicked");
-  sendMessage();
+  // sendMessage();
 });
 
 // Attach click event listener to the send button
-camera.addEventListener("camera", function () {
-  console.log("sendButton clicked");
-  Toastify({
-    text: "This is a toast",
-    duration: 3000,
-    destination: "https://github.com/apvarun/toastify-js",
-    newWindow: true,
-    close: true,
-    gravity: "top", // `top` or `bottom`
-    position: "left", // `left`, `center` or `right`
-    stopOnFocus: true, // Prevents dismissing of toast on hover
-    style: {
-      background: "linear-gradient(to right, #00b09b, #96c93d)",
-    },
-    onClick: function () {}, // Callback after click
-  }).showToast();
+camera.addEventListener("click", function () {
+ showMessage("COMMING SOON! ");
+  
 });
 
 // Attach click event listener to the exit button
-toggleConnectionButton.addEventListener("esc", function () {
+toggleConnectionButton.addEventListener("click", function () {
   console.log("exit");
   socket.emit("exit", recipient);
 });
 
-function connect(user) {
+
+function showMessage(recipient) {
+  Toastify({
+    text: recipient,
+    duration: 3000,
+    destination: "https://github.com/apvarun/toastify-js",
+    newWindow: true,
+
+    gravity: "top", // `top` or `bottom`
+    position: "right", // `left`, `center` or `right`
+    stopOnFocus: true, // Prevents dismissing of toast on hover
+    style: {
+      background: "#32CD32",
+    },
+    onClick: function () {}, // Callback after click
+  }).showToast();
+}
+
+function connect() {
   console.log("connect clicked");
   const messageInput = nameField.value.trim();
   console.log(messageInput == "", messageInput);

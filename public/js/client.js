@@ -10,6 +10,10 @@ var camera = document.getElementById("camera");
 var recipient = "";
 var recipientName = "";
 var currentUserName = "";
+var myData = null;
+
+
+
 
 // if user close tab, then exit the user session
 window.addEventListener("beforeunload", function (e) {
@@ -19,6 +23,24 @@ window.addEventListener("beforeunload", function (e) {
 
 socket.on("connect", () => {
   changeStatus("connected");
+  // Get the cookie value containing the concatenated string
+  const cookieString = document.cookie;
+
+  if (cookieString) {
+    // Split the cookie string into individual values based on the delimiter (',')
+
+    // Find the JSON value within the cookie string
+    const start = cookieString.indexOf("{");
+    const end = cookieString.lastIndexOf("}") + 1;
+    const jsonValue = cookieString.substring(start, end);
+    const jsonObject = JSON.parse(jsonValue);
+    jsonObject.id =socket.id;
+    myData = jsonObject;
+    connect(jsonObject)
+    
+  } else {
+    console.log("No cookies found");
+  }
 });
 // this will notify if someone is connected
 socket.on("connectToUser", (data) => {
@@ -50,7 +72,9 @@ function sendMessage() {
 }
 
 // Function to send message to server
-function exitUser() {}
+function exitUser() {
+
+}
 
 // Function to handle pressing Enter key to send message
 try {
@@ -66,7 +90,7 @@ try {
 // Attach click event listener to the send button
 sendButton.addEventListener("click", function () {
   console.log("sendButton clicked");
-  // sendMessage();
+  sendMessage();
 });
 
 // Attach click event listener to the send button
@@ -77,8 +101,17 @@ camera.addEventListener("click", function () {
 
 // Attach click event listener to the exit button
 toggleConnectionButton.addEventListener("click", function () {
-  console.log("exit");
-  socket.emit("exit", recipient);
+  if(recipient){
+    console.log("exit");
+    socket.emit("exit", recipient);
+    recipient = null;
+    recipientName = null;
+    toggleConnectionButton.innerText = "New";
+  }else{
+    connect(myData);
+    toggleConnectionButton.innerText = "ESC";
+  }
+  
 });
 
 
@@ -99,20 +132,11 @@ function showMessage(recipient) {
   }).showToast();
 }
 
-function connect() {
-  console.log("connect clicked");
-  const messageInput = nameField.value.trim();
-  console.log(messageInput == "", messageInput);
-  if (messageInput == "") {
-    alert("Enter Name");
-    return;
-  }
-  socket.emit("userConnectRequest", { id: socket.id, name: messageInput });
+function connect(user) {
+  socket.emit("userConnectRequest",user);
   changeStatus("finding User...");
   currentUserName = messageInput;
-  nameField.value = "";
-  nameField.style.visibility = "hidden";
-  connectButton.style.visibility = "hidden";
+  console.log(user);
 }
 
 function changeStatus(status) {

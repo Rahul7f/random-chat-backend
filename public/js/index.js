@@ -6,8 +6,11 @@ document
     // Get form values
     var name = document.getElementById("name").value;
     var gender = document.getElementById("gender").value;
-    var interests = document.getElementById("intrest").value;
+    var interest = document.getElementById("intrest").value;
 
-    window.location.href =
-      "/chat?name=" + name + "&gender=" + gender + "&interest=" + interests;
+    const userData = { name: name, gender: gender, interest: interest };
+    const userDataString = JSON.stringify(userData);
+    document.cookie = `${userDataString}`;
+    
+    window.location.href = "/chat";
   });

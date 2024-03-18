@@ -12,7 +12,7 @@ const io = socketIo(server);
 const PORT = process.env.PORT || 3000;
 
 // Store connected users
-let connectedUsers = [];
+let waitingQueue = [];
 
 app.use(express.static("public"));
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -32,10 +32,9 @@ io.on("connection", (socket) => {
   // Handle when a user sends a message
   socket.on("message", (data) => {
     console.log("Message received:", data);
-
     // Broadcast the message to the intended recipient
-    socket.to(data.recipient).emit("message", {
-      sender: socket.id,
+    socket.to(data.recipientId).emit("message", {
+      senderId: socket.id,
       message: data.message,
     });
   });
@@ -43,56 +42,73 @@ io.on("connection", (socket) => {
   // Handle disconnection
   socket.on("disconnect", (data) => {
     console.log("Disconnect", data);
+
   });
 
   socket.on("userConnectRequest", (data) => {
 
-    
-
     // Add user to connectedUsers array
     console.log("Adding user to connectedUsers, " + JSON.stringify(data));
 
-    // check if user is already connected
+    waitingQueue.push(data);
 
-    connectedUsers.push(data);
+    console.log("now all users in list are ",waitingQueue);
 
     // Find a compatible partner based on interests
     const compatiblePartner = findCompatiblePartner(data);
 
-    if (compatiblePartner) {
+    if (false) {
       // Emit event to establish connection between the two users
       io.to(data.id).emit("connectToUser", compatiblePartner);
       io.to(compatiblePartner.id).emit("connectToUser", data);
 
       // Remove both users from connectedUsers array
-      connectedUsers = connectedUsers.filter( (user) => user.id !== data.id && user.id !== compatiblePartner.id  );
+      waitingQueue = waitingQueue.filter( (user) => user.id !== data.id && user.id !== compatiblePartner.id  );
+      console.log("compatiable matchmaking");
     }else{
       // Check if there are enough users for a connection
-      if (connectedUsers.length >= 2) {
-        // Get the last two users from the connectedUsers array
-        const user1 = connectedUsers.pop();
-        const user2 = connectedUsers.pop();
+      if (waitingQueue.length >= 2) {
+
+        const user1 = waitingQueue.shift();
+        const user2 = waitingQueue.shift();
 
         // Emit event to establish connection between the two users
         io.to(user1.id).emit("connectToUser", user2);
         io.to(user2.id).emit("connectToUser", user1);
+
+        console.log("random matchmaking");
       }
     }
 
   });
 
   // if user  want to exit room
-  socket.on("exit", (leftUser) => {
-    console.log("partner left check");
-    // notifiy other user if there partner left
-    io.to(leftUser).emit("partnerLeft");
+  socket.on("exit", (exitingUser, partnerOfExitingUser) => {
+    console.log("exit called from user ", JSON.stringify(exitingUser), " for user ", JSON.stringify(partnerOfExitingUser));
+    
+    if(partnerOfExitingUser)
+    // Notify other user if their partner left
+    io.to(partnerOfExitingUser.id).emit("partnerLeft",exitingUser);
+  
+    console.log('List before deleting ', waitingQueue);
+    
+    // Find the index of the exiting user in the waitingQueue array
+    const index = waitingQueue.findIndex(user => user.id === exitingUser.id);
+    console.log('Index of exiting user:', index);
+    
+    // Remove the exiting user from waitingQueue if found
+    if (index > -1) {
+      waitingQueue.splice(index, 1); // Remove one item from the array
+    }
   });
 
 });
 
 function findCompatiblePartner(newUser) {
-  for (const user of connectedUsers) {
-    if (user.interest === newUser.gender && newUser.interest === user.gender) {
+  for (const user of waitingQueue) {
+    if (user.interest === newUser.gender && newUser.interest === user.gender
+      && user.interest!=null && user.gender !=null && newUser.interest != null && newUser.gender != null
+      ) {
       return user;
     }
   }

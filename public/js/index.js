@@ -10,7 +10,6 @@ document
 
     const userData = { name: name, gender: gender, interest: interest };
     const userDataString = JSON.stringify(userData);
-    document.cookie = `${userDataString}`;
-    
+    localStorage.setItem("userdata", userDataString);    
     window.location.href = "/chat";
   });

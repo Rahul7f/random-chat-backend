@@ -1,6 +1,15 @@
-same user is not allowed to connect by self.
+same user is not allowed to connect by self. //done
 
-MATCH WITH Intrest --  as discussed with aadharsh over call.
+MATCH WITH Intrest --  as discussed with aadharsh over call. //currently disabled and unimplemented
 
-CONNECT NEW AND ESC -- ADD STATUS IN MESSAGE CONRAINER
+CONNECT NEW AND ESC -- ADD STATUS IN MESSAGE CONRAINER //done
 
+ADD a condition to use a default stranger name when someone directly opens chat page
+
+
+case of disconnection
+exit
+closed the tab
+reloaded the tab (save and reuse socket and connect to same participant)
+closed the browser
+internet broke

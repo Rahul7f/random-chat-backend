@@ -1,5 +1,5 @@
 const socket = io();
-var statusHeading = document.getElementById("status");
+// var statusHeading = document.getElementById("status");
 var nameField = document.getElementById("nameInput");
 var messageListDiv = document.getElementById("messages");
 var messageField = document.getElementById("messageInput");
@@ -8,17 +8,20 @@ var toggleConnectionButton = document.getElementById("esc");
 var camera = document.getElementById("camera");
 var centerDiv = document.getElementById("center");
 
-var recipient = "";
-var recipientName = "";
-var currentUserName = "";
-var myData = null;
+var connectedUserObject = null;
+var selfUserObject = null;
 
 // if user close tab, then exit the user session
 window.addEventListener("beforeunload", function (e) {
-  console.log("exit");
-  socket.emit("exit", recipient);
+  exitChat();
 });
 
+function exitChat(){
+  console.log("exitChat called");
+  socket.emit("exit", selfUserObject, connectedUserObject);
+  connectedUserObject = null;
+  addStatus("You've exited the chat");
+}
 
 resize();
 
@@ -45,48 +48,50 @@ function resize() {
 }
 
 socket.on("connect", () => {
-  changeStatus("connected");
-  // Get the cookie value containing the concatenated string
-  const cookieString = document.cookie;
+  console.log("connected");
+  addStatus("connected to server");
 
-  if (cookieString) {
-    // Split the cookie string into individual values based on the delimiter (',')
-
-    // Find the JSON value within the cookie string
-    const start = cookieString.indexOf("{");
-    const end = cookieString.lastIndexOf("}") + 1;
-    const jsonValue = cookieString.substring(start, end);
-    const jsonObject = JSON.parse(jsonValue);
-    jsonObject.id = socket.id;
-    myData = jsonObject;
-    connect(jsonObject);
+  // Retrieving data:
+  let text = localStorage.getItem("userdata");
+  let userObject=null;
+  console.log
+  if (text) {
+    console.log("Data found in localstorage");
+    userObject = JSON.parse(text);
   } else {
-    console.log("No cookies found");
+    console.log("No data found in localstorage");
+    userObject = {
+      name: "Stranger", gender: null, interest: null 
+    };
   }
+  userObject.id = socket.id;
+  selfUserObject = userObject;
 });
 // this will notify if someone is connected
 socket.on("connectToUser", (data) => {
-  recipient = data.id;
-  recipientName = data.name;
-  changeStatus(data.name + " connected");
+  connectedUserObject = data;
+  addStatus(data.name + " connected");
 });
-socket.on("partnerLeft", () => {
-  changeStatus("Partner left");
+
+socket.on("partnerLeft", (otheruser) => {
+  addStatus("user "+otheruser.name+" left");
+  connectedUserObject=null;
+  toggleConnectionButton.innerText="NEW";
+  isNewButtonPressed=false;
 });
 
 // Receive message from server and display it
 socket.on("message", (data) => {
-  addMessage(recipientName, data.message, false);
+  addMessage(connectedUserObject.name, data.message, false);
 });
 
 // Function to send message to server
 function sendMessage() {
   const message = messageField.value.trim();
-  if (message !== "") {
+  if (message !== "" && connectedUserObject!=null) {
     socket.emit("message", {
-      recipient: recipient,
+      recipientId: connectedUserObject.id,
       message: message,
-      sender: socket.id,
     });
     addMessage("You", message, true);
     messageInput.value = "";
@@ -115,16 +120,16 @@ camera.addEventListener("click", function () {
   showMessage("COMMING SOON! ");
 });
 
+let isNewButtonPressed = false;
 // Attach click event listener to the exit button
 toggleConnectionButton.addEventListener("click", function () {
-  if (recipient) {
-    console.log("exit");
-    socket.emit("exit", recipient);
-    recipient = null;
-    recipientName = null;
+  if (connectedUserObject || (connectedUserObject==null && isNewButtonPressed)) {
+    exitChat();
     toggleConnectionButton.innerText = "New";
-  } else {
-    connect(myData);
+    isNewButtonPressed=false;
+  } else if(connectedUserObject==null && !isNewButtonPressed) {
+    isNewButtonPressed=true;
+    connectChat(selfUserObject);
     toggleConnectionButton.innerText = "ESC";
   }
 });
@@ -146,16 +151,13 @@ function showMessage(recipient) {
   }).showToast();
 }
 
-function connect(user) {
-  socket.emit("userConnectRequest", user);
-  changeStatus("finding User...");
-  currentUserName = messageInput;
-  console.log(user);
+function connectChat() {
+  console.log("userConnectRequest Called");
+  socket.emit("userConnectRequest", selfUserObject);
+  addStatus("waiting for user");
+  // currentUserName = messageInput; kyo h ye line?
 }
 
-function changeStatus(status) {
-  statusHeading.innerText = status;
-}
 
 function addMessage(name, text, isSelf) {
   const messageContainer = document.createElement("div");
@@ -179,4 +181,26 @@ function addMessage(name, text, isSelf) {
   messageContainer.appendChild(message);
   messageListDiv.appendChild(messageContainer);
   messageListDiv.scrollTop = messageListDiv.scrollHeight;
+}
+
+function addStatus(status){
+  const statusContainer = document.createElement("div");
+  statusContainer.setAttribute("style","text-align: center");
+  const strongElement=document.createElement("strong");
+  strongElement.innerText=status;
+  strongElement.setAttribute("style","margin: auto; width: fit-content");
+  statusContainer.appendChild(strongElement);
+  messageListDiv.appendChild(statusContainer);
+  messageListDiv.scrollTop = messageListDiv.scrollHeight;
+}
+
+
+//exception handling callbacks
+//need to store the socket id in case if the page refreshes or the server reconnects this can be helpful
+socket.on('connect_error', err => handleErrors("connect_error",err))
+socket.on('connect_failed', err => handleErrors("connect_failed",err))
+socket.on('disconnect', err => handleErrors("disconnect",err))
+
+function handleErrors(event,err){
+  console.log("error occured on ",event,err);
 }

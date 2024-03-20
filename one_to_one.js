@@ -39,6 +39,10 @@ io.on("connection", (socket) => {
     });
   });
 
+  socket.on("debug",(data)=>{
+    console.log(data);
+  });
+
   // Handle disconnection
   socket.on("disconnect", (data) => {
     console.log("Disconnect", data);

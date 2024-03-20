@@ -7,7 +7,7 @@ var sendButton = document.getElementById("sendButton");
 var toggleConnectionButton = document.getElementById("esc");
 var camera = document.getElementById("camera");
 var centerDiv = document.getElementById("center");
-
+var body = document.getElementById("body");
 var connectedUserObject = null;
 var selfUserObject = null;
 
@@ -16,13 +16,14 @@ window.addEventListener("beforeunload", function (e) {
   exitChat();
 });
 
-function exitChat(){
+function exitChat() {
   console.log("exitChat called");
   socket.emit("exit", selfUserObject, connectedUserObject);
   connectedUserObject = null;
   addStatus("You've exited the chat");
 }
 
+//calling resize as without this the screen will collapse in windows browser
 resize();
 
 // Attach an event listener to the window resize event
@@ -31,21 +32,27 @@ window.addEventListener("resize", function () {
   resize();
 });
 
-function resize() {
-  const screenWidth = window.innerWidth;
-
-  const isMobile = screenWidth < 768;
-
-  if (isMobile) {
-    centerDiv.classList.remove("center");
-    centerDiv.classList.add("centerphone");
-  } else {
-    console.log("This is a web device.");
-
-    centerDiv.classList.remove("centerphone");
-    centerDiv.classList.add("center");
-  }
+//this will send debug message to be printed on nodejs server
+function debug(msg) {
+  socket.emit("debug", msg);
 }
+
+
+function resize() {
+  //reinitializing 100% as changing orientation cause instable innerHeight and innerWidth without this
+  body.style.height = "100%";
+  body.style.width = "100%";
+
+  //getting innerHeight and innerWidth to assign it to body
+  var windowHeight = window.innerHeight;
+  var windowWidth = window.innerWidth;
+
+  windowHeight += 'px';
+  windowWidth += 'px';
+  body.style.height = windowHeight;
+  body.style.width = windowWidth;
+}
+
 
 socket.on("connect", () => {
   console.log("connected");
@@ -53,7 +60,7 @@ socket.on("connect", () => {
 
   // Retrieving data:
   let text = localStorage.getItem("userdata");
-  let userObject=null;
+  let userObject = null;
   console.log
   if (text) {
     console.log("Data found in localstorage");
@@ -61,7 +68,7 @@ socket.on("connect", () => {
   } else {
     console.log("No data found in localstorage");
     userObject = {
-      name: "Stranger", gender: null, interest: null 
+      name: "Stranger", gender: null, interest: null
     };
   }
   userObject.id = socket.id;
@@ -74,10 +81,10 @@ socket.on("connectToUser", (data) => {
 });
 
 socket.on("partnerLeft", (otheruser) => {
-  addStatus("user "+otheruser.name+" left");
-  connectedUserObject=null;
-  toggleConnectionButton.innerText="NEW";
-  isNewButtonPressed=false;
+  addStatus("user " + otheruser.name + " left");
+  connectedUserObject = null;
+  toggleConnectionButton.innerText = "NEW";
+  isNewButtonPressed = false;
 });
 
 // Receive message from server and display it
@@ -88,7 +95,7 @@ socket.on("message", (data) => {
 // Function to send message to server
 function sendMessage() {
   const message = messageField.value.trim();
-  if (message !== "" && connectedUserObject!=null) {
+  if (message !== "" && connectedUserObject != null) {
     socket.emit("message", {
       recipientId: connectedUserObject.id,
       message: message,
@@ -123,12 +130,12 @@ camera.addEventListener("click", function () {
 let isNewButtonPressed = false;
 // Attach click event listener to the exit button
 toggleConnectionButton.addEventListener("click", function () {
-  if (connectedUserObject || (connectedUserObject==null && isNewButtonPressed)) {
+  if (connectedUserObject || (connectedUserObject == null && isNewButtonPressed)) {
     exitChat();
     toggleConnectionButton.innerText = "New";
-    isNewButtonPressed=false;
-  } else if(connectedUserObject==null && !isNewButtonPressed) {
-    isNewButtonPressed=true;
+    isNewButtonPressed = false;
+  } else if (connectedUserObject == null && !isNewButtonPressed) {
+    isNewButtonPressed = true;
     connectChat(selfUserObject);
     toggleConnectionButton.innerText = "ESC";
   }
@@ -147,7 +154,7 @@ function showMessage(recipient) {
     style: {
       background: "#32CD32",
     },
-    onClick: function () {}, // Callback after click
+    onClick: function () { }, // Callback after click
   }).showToast();
 }
 
@@ -183,12 +190,12 @@ function addMessage(name, text, isSelf) {
   messageListDiv.scrollTop = messageListDiv.scrollHeight;
 }
 
-function addStatus(status){
+function addStatus(status) {
   const statusContainer = document.createElement("div");
-  statusContainer.setAttribute("style","text-align: center");
-  const strongElement=document.createElement("strong");
-  strongElement.innerText=status;
-  strongElement.setAttribute("style","margin: auto; width: fit-content");
+  statusContainer.setAttribute("style", "text-align: center");
+  const strongElement = document.createElement("strong");
+  strongElement.innerText = status;
+  strongElement.setAttribute("style", "margin: auto; width: fit-content");
   statusContainer.appendChild(strongElement);
   messageListDiv.appendChild(statusContainer);
   messageListDiv.scrollTop = messageListDiv.scrollHeight;
@@ -197,10 +204,10 @@ function addStatus(status){
 
 //exception handling callbacks
 //need to store the socket id in case if the page refreshes or the server reconnects this can be helpful
-socket.on('connect_error', err => handleErrors("connect_error",err))
-socket.on('connect_failed', err => handleErrors("connect_failed",err))
-socket.on('disconnect', err => handleErrors("disconnect",err))
+socket.on('connect_error', err => handleErrors("connect_error", err))
+socket.on('connect_failed', err => handleErrors("connect_failed", err))
+socket.on('disconnect', err => handleErrors("disconnect", err))
 
-function handleErrors(event,err){
-  console.log("error occured on ",event,err);
+function handleErrors(event, err) {
+  console.log("error occured on ", event, err);
 }

@@ -13,6 +13,55 @@ const PORT = process.env.PORT || 3000;
 
 // Store connected users
 let waitingQueue = [];
+let waitingQueueForMales = []
+let waitingQueueForFemales = []
+let waitingQueueForOthers = []
+
+
+function addToListAccordingToGender(userObject) {
+  switch (userObject.gender) {
+    case "male":
+      waitingQueueForMales.push(userObject);
+      break;
+    case "female":
+      waitingQueueForFemales.push(userObject);
+      break;
+    case "other":
+      waitingQueueForOthers.push(userObject);
+      break;
+  }
+}
+
+function findBasedonInterest(userObject) {
+  switch (userObject.interest) {
+    case "male":
+      return lookInGivenQueue(waitingQueueForMales, userObject);
+    case "female":
+      return lookInGivenQueue(waitingQueueForFemales, userObject);
+    case "other":
+      return lookInGivenQueue(waitingQueueForOthers, userObject);
+  }
+  return null;
+}
+
+function lookInGivenQueue(queue, user) {
+  for (let i = 0; i < queue.length; i++) {
+    let partner = queue[i];
+    //conditions to find match if this satisfied then match is found
+    //respecting the interest of user
+    if (user.interest == partner.gender
+      //respecting interest of other partner
+      && partner.interest == user.gender
+      //avoiding connecting user to self if both gender and interest are same
+      && user.id != partner.id) {
+      queue.splice(i, 1);
+      //als
+      return partner;
+    }
+  }
+  return null;
+}
+
 
 app.use(express.static("public"));
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -39,7 +88,7 @@ io.on("connection", (socket) => {
     });
   });
 
-  socket.on("debug",(data)=>{
+  socket.on("debug", (data) => {
     console.log(data);
   });
 
@@ -49,57 +98,65 @@ io.on("connection", (socket) => {
 
   });
 
-  socket.on("userConnectRequest", (data) => {
-
-    // Add user to connectedUsers array
-    console.log("Adding user to connectedUsers, " + JSON.stringify(data));
-
-    waitingQueue.push(data);
-
-    console.log("now all users in list are ",waitingQueue);
+  socket.on("userConnectRequestwithInterest", (userObject) => {
 
     // Find a compatible partner based on interests
-    const compatiblePartner = findCompatiblePartner(data);
+    const compatiblePartner = findBasedonInterest(userObject);
 
-    if (false) {
+    if (compatiblePartner) {
+
       // Emit event to establish connection between the two users
-      io.to(data.id).emit("connectToUser", compatiblePartner);
-      io.to(compatiblePartner.id).emit("connectToUser", data);
+      io.to(userObject.id).emit("connectToUser", compatiblePartner);
+      io.to(compatiblePartner.id).emit("connectToUser", userObject);
 
-      // Remove both users from connectedUsers array
-      waitingQueue = waitingQueue.filter( (user) => user.id !== data.id && user.id !== compatiblePartner.id  );
-      console.log("compatiable matchmaking");
-    }else{
-      // Check if there are enough users for a connection
-      if (waitingQueue.length >= 2) {
+    } else {
 
-        const user1 = waitingQueue.shift();
-        const user2 = waitingQueue.shift();
+      //added to list so that someone with compatiability picks up from list
+      addToListAccordingToGender(userObject);
 
-        // Emit event to establish connection between the two users
-        io.to(user1.id).emit("connectToUser", user2);
-        io.to(user2.id).emit("connectToUser", user1);
-
-        console.log("random matchmaking");
-      }
     }
+
+  })
+
+  socket.on("userConnectRequest", (userObject) => {
+
+    // Add user to connectedUsers array
+    console.log("Adding user to connectedUsers, " + JSON.stringify(userObject));
+
+    waitingQueue.push(userObject);
+
+    // console.log("now all users in list are ", waitingQueue);
+
+    // Check if there are enough users for a connection
+    if (waitingQueue.length >= 2) {
+
+      const user1 = waitingQueue.shift();
+      const user2 = waitingQueue.shift();
+
+      // Emit event to establish connection between the two users
+      io.to(user1.id).emit("connectToUser", user2);
+      io.to(user2.id).emit("connectToUser", user1);
+
+      console.log("random matchmaking");
+    }
+
 
   });
 
   // if user  want to exit room
   socket.on("exit", (exitingUser, partnerOfExitingUser) => {
     console.log("exit called from user ", JSON.stringify(exitingUser), " for user ", JSON.stringify(partnerOfExitingUser));
-    
-    if(partnerOfExitingUser)
-    // Notify other user if their partner left
-    io.to(partnerOfExitingUser.id).emit("partnerLeft",exitingUser);
-  
+
+    if (partnerOfExitingUser)
+      // Notify other user if their partner left
+      io.to(partnerOfExitingUser.id).emit("partnerLeft", exitingUser);
+
     console.log('List before deleting ', waitingQueue);
-    
+
     // Find the index of the exiting user in the waitingQueue array
     const index = waitingQueue.findIndex(user => user.id === exitingUser.id);
     console.log('Index of exiting user:', index);
-    
+
     // Remove the exiting user from waitingQueue if found
     if (index > -1) {
       waitingQueue.splice(index, 1); // Remove one item from the array
@@ -108,17 +165,6 @@ io.on("connection", (socket) => {
 
 });
 
-function findCompatiblePartner(newUser) {
-  for (const user of waitingQueue) {
-    if (user.interest === newUser.gender && newUser.interest === user.gender
-      && user.interest!=null && user.gender !=null && newUser.interest != null && newUser.gender != null
-      ) {
-      return user;
-    }
-  }
-
-  return null; // No compatible partner found return any 
-}
 
 server.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);

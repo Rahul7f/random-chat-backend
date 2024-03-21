@@ -73,6 +73,8 @@ socket.on("connect", () => {
   }
   userObject.id = socket.id;
   selfUserObject = userObject;
+  toggle();
+
 });
 // this will notify if someone is connected
 socket.on("connectToUser", (data) => {
@@ -92,6 +94,20 @@ socket.on("message", (data) => {
   addMessage(connectedUserObject.name, data.message, false);
 });
 
+
+function  toggle() {
+  if (connectedUserObject || (connectedUserObject == null && isNewButtonPressed)) {
+    exitChat();
+    toggleConnectionButton.innerText = "New";
+    isNewButtonPressed = false;
+  }
+  else if (connectedUserObject == null && !isNewButtonPressed) {
+    isNewButtonPressed = true;
+    connectChat(selfUserObject);
+    toggleConnectionButton.innerText = "ESC";
+  }
+}
+
 // Function to send message to server
 function sendMessage() {
   const message = messageField.value.trim();
@@ -100,7 +116,7 @@ function sendMessage() {
       recipientId: connectedUserObject.id,
       message: message,
     });
-    addMessage("You", message, true);
+    addMessage(selfUserObject.name, message, true);
     messageInput.value = "";
   }
 }
@@ -130,15 +146,7 @@ camera.addEventListener("click", function () {
 let isNewButtonPressed = false;
 // Attach click event listener to the exit button
 toggleConnectionButton.addEventListener("click", function () {
-  if (connectedUserObject || (connectedUserObject == null && isNewButtonPressed)) {
-    exitChat();
-    toggleConnectionButton.innerText = "New";
-    isNewButtonPressed = false;
-  } else if (connectedUserObject == null && !isNewButtonPressed) {
-    isNewButtonPressed = true;
-    connectChat(selfUserObject);
-    toggleConnectionButton.innerText = "ESC";
-  }
+  toggle();
 });
 
 function showMessage(recipient) {

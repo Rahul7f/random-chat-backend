@@ -1,15 +1,29 @@
-same user is not allowed to connect by self. //done
+--------------------------------------------DONE----------------------------------------------------
+same user is not allowed to connect by self.
 
-MATCH WITH Intrest --  as discussed with aadharsh over call. //currently disabled and unimplemented
+CONNECT NEW AND ESC -- ADD STATUS IN MESSAGE CONTAINER
 
-CONNECT NEW AND ESC -- ADD STATUS IN MESSAGE CONRAINER //done
+
+
+--------------------------------------------PENDING----------------------------------------------------
 
 ADD a condition to use a default stranger name when someone directly opens chat page
+(What if gender and interest are null - SOLUTION DISCUSSED ON CALL)
 
+MATCH WITH Interest --  as discussed  over call.
 
-case of disconnection
-exit
-closed the tab
+remove user if disconnected in any case
+CASE:  exit , closed the tab, closed the browser ,internet broke
+
 reloaded the tab (save and reuse socket and connect to same participant)
-closed the browser
-internet broke
+
+send image in chat
+
+align all the message in bottom
+
+
+
+
+
+
+

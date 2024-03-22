@@ -29,6 +29,7 @@ body {
   /* Adjust border radius to have a smooth edge */
   padding-left: 10px;
   padding-right: 10px;
+  padding-bottom: 5px;
   max-width: 70%;
   /* Limit the width of the chat bubble */
 }
@@ -104,7 +105,7 @@ body {
   }
 }
 
-@media only screen and (max-width: 600px) or (max-height: 600px) {
+@media only screen and ((max-width: 600px) or (max-height: 600px)) {
 .center {
   background-color: #ffffff; /* Changed to a valid color code */
   opacity: 0.7;

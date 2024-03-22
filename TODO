@@ -11,6 +11,7 @@ ADD a condition to use a default stranger name when someone directly opens chat 
 (What if gender and interest are null - SOLUTION DISCUSSED ON CALL)
 
 MATCH WITH Interest --  as discussed  over call.
+ISSUE AFTER CANCELLING WHILE SEARCHING WITH INTRESTS
 
 remove user if disconnected in any case
 CASE:  exit , closed the tab, closed the browser ,internet broke

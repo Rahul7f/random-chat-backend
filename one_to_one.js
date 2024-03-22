@@ -116,6 +116,10 @@ io.on("connection", (socket) => {
 
     }
 
+  });
+
+  socket.on("removeMeFromInterestMatchmaking",(exitingUser)=>{
+    deleteUserFromGenderLists(exitingUser);
   })
 
   socket.on("userConnectRequest", (userObject) => {
@@ -143,27 +147,56 @@ io.on("connection", (socket) => {
 
   });
 
+  
   // if user  want to exit room
   socket.on("exit", (exitingUser, partnerOfExitingUser) => {
-    console.log("exit called from user ", JSON.stringify(exitingUser), " for user ", JSON.stringify(partnerOfExitingUser));
+    console.log("exit called from user ", JSON.stringify(exitingUser));
 
     if (partnerOfExitingUser)
       // Notify other user if their partner left
       io.to(partnerOfExitingUser.id).emit("partnerLeft", exitingUser);
 
-    console.log('List before deleting ', waitingQueue);
-
     // Find the index of the exiting user in the waitingQueue array
-    const index = waitingQueue.findIndex(user => user.id === exitingUser.id);
-    console.log('Index of exiting user:', index);
+    var index = waitingQueue.findIndex(user => user.id === exitingUser.id);
 
     // Remove the exiting user from waitingQueue if found
     if (index > -1) {
       waitingQueue.splice(index, 1); // Remove one item from the array
     }
+
+    // if(exitingUser.gender)
+      deleteUserFromGenderLists(exitingUser);
+    
+
   });
 
 });
+
+//deletes user from gender preference lists if added
+function deleteUserFromGenderLists(exitingUser){
+  var index=null;
+  console.log("exiting user",exitingUser);
+  switch (exitingUser.gender) {
+    case "male":
+      index = waitingQueueForMales.findIndex(user => user.id === exitingUser.id);
+      if (index > -1) {
+        waitingQueueForMales.splice(index, 1);
+      }
+      break;
+    case "female":
+      index = waitingQueueForFemales.findIndex(user => user.id === exitingUser.id);
+      if (index > -1) {
+        waitingQueueForFemales.splice(index, 1); // Remove one item from the array
+      }
+      break;
+    case "other":
+      index = waitingQueueForOthers.findIndex(user => user.id === exitingUser.id);
+      if (index > -1) {
+        waitingQueueForOthers.splice(index, 1); // Remove one item from the array
+      }
+      break;
+  }
+}
 
 
 server.listen(PORT, () => {

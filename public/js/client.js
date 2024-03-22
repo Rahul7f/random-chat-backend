@@ -26,6 +26,22 @@ function exitChat() {
 //calling resize as without this the screen will collapse in windows browser
 resize();
 
+let timeoutId=null;
+function asyncTimer(duration, callback) {
+  timeoutId=setTimeout(callback, duration);
+}
+
+function clearTimeoutCallback(){
+  if(timeoutId)
+    clearTimeout(timeoutId);
+}
+
+// Example usage:
+// console.log("Starting async timer...");
+// asyncTimer(3000, () => {
+//   console.log("Async timer completed after 3 seconds.");
+// });
+
 // Attach an event listener to the window resize event
 window.addEventListener("resize", function () {
   // Call checkScreenType() when the window is resized
@@ -65,6 +81,7 @@ socket.on("connect", () => {
   if (text) {
     console.log("Data found in localstorage");
     userObject = JSON.parse(text);
+
   } else {
     console.log("No data found in localstorage");
     userObject = {
@@ -73,11 +90,12 @@ socket.on("connect", () => {
   }
   userObject.id = socket.id;
   selfUserObject = userObject;
-  toggle();
+  exitOrConnectButton();
 
 });
 // this will notify if someone is connected
 socket.on("connectToUser", (data) => {
+  clearTimeoutCallback();
   connectedUserObject = data;
   addStatus(data.name + " connected");
 });
@@ -95,7 +113,8 @@ socket.on("message", (data) => {
 });
 
 
-function  toggle() {
+function exitOrConnectButton() {
+  clearTimeoutCallback();
   if (connectedUserObject || (connectedUserObject == null && isNewButtonPressed)) {
     exitChat();
     toggleConnectionButton.innerText = "New";
@@ -103,7 +122,8 @@ function  toggle() {
   }
   else if (connectedUserObject == null && !isNewButtonPressed) {
     isNewButtonPressed = true;
-    connectChat(selfUserObject);
+    isUsingPreferenceForMatching = true;
+    connectChat();
     toggleConnectionButton.innerText = "ESC";
   }
 }
@@ -146,7 +166,7 @@ camera.addEventListener("click", function () {
 let isNewButtonPressed = false;
 // Attach click event listener to the exit button
 toggleConnectionButton.addEventListener("click", function () {
-  toggle();
+  exitOrConnectButton();
 });
 
 function showMessage(recipient) {
@@ -166,10 +186,25 @@ function showMessage(recipient) {
   }).showToast();
 }
 
+let isUsingPreferenceForMatching = true;
+
 function connectChat() {
   console.log("userConnectRequest Called");
-  socket.emit("userConnectRequest", selfUserObject);
-  addStatus("waiting for user");
+  if (isUsingPreferenceForMatching && selfUserObject.gender && selfUserObject.interest) {
+    socket.emit("userConnectRequestwithInterest", selfUserObject);
+    addStatus("waiting for user as per your preference");
+    asyncTimer(5000, () => {
+      if (!connectedUserObject) {
+        socket.emit("removeMeFromInterestMatchmaking", selfUserObject);
+        addStatus("unable to find your match trying in random matching")
+        isUsingPreferenceForMatching = false;
+        connectChat();
+      }
+    })
+  } else {
+    socket.emit("userConnectRequest", selfUserObject);
+    addStatus("waiting for user");
+  }
   // currentUserName = messageInput; kyo h ye line?
 }
 
@@ -200,10 +235,10 @@ function addMessage(name, text, isSelf) {
 
 function addStatus(status) {
   const statusContainer = document.createElement("div");
-  statusContainer.setAttribute("style", "text-align: center");
+  statusContainer.setAttribute("style", "text-align: center; align-self: center;");
   const strongElement = document.createElement("strong");
   strongElement.innerText = status;
-  strongElement.setAttribute("style", "margin: auto; width: fit-content");
+  strongElement.setAttribute("style", "margin: auto; width: fit-content;");
   statusContainer.appendChild(strongElement);
   messageListDiv.appendChild(statusContainer);
   messageListDiv.scrollTop = messageListDiv.scrollHeight;

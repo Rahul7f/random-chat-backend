@@ -1,44 +1,32 @@
-body {
-  background-color: #ffffff; /* White background */
-  font-family: Arial, sans-serif;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-  margin: 0;
-}
 
-.container {
-  background-color: #ffbe98; /* Blue box */
+#infoBox {
+  background-color: #725ABA; /* Blue box */
   padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-  width: 300px;
+  /*border-radius: 10px;*/
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  width: 20%;
   text-align: center;
 }
 
-input[type="text"],
-select {
-  width: 100%;
-  padding: 10px;
-  margin: 10px 0;
-  border-radius: 5px;
-  border: 1px solid #ccc;
-  box-sizing: border-box;
+
+#banner1 {
+ width: 80%;
+}
+#cont {
+  display: flex; /* Use flexbox for horizontal layout */
+  justify-content: flex-start; /* Align items horizontally at the center */
+  align-items: flex-start; /* Align items vertically at the center */
+  background-color: #725ABA; /* Blue box */
 }
 
-input[type="submit"] {
-  background-color: black; /* Green submit button */
-  color: #ffffff;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 5px;
-  cursor: pointer;
+.item {
+  background-color: lightblue; /* Optional: add background color */
+  padding: 10px; /* Optional: add padding for spacing */
+  margin: 5px; /* Optional: add margin for spacing between items */
 }
-.heading {
-  right: 0;
-  top: 0;
-  padding-right: 20px;
-  position: absolute;
-  color: #333333;
+
+
+div#Panes {
+  margin-top: 15px;
+  padding: 15px
 }

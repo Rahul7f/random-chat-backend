@@ -49,11 +49,11 @@ function lookInGivenQueue(queue, user) {
     let partner = queue[i];
     //conditions to find match if this satisfied then match is found
     //respecting the interest of user
-    if (user.interest == partner.gender
+    if (user.interest === partner.gender
       //respecting interest of other partner
-      && partner.interest == user.gender
+      && partner.interest === user.gender
       //avoiding connecting user to self if both gender and interest are same
-      && user.id != partner.id) {
+      && user.id !== partner.id) {
       queue.splice(i, 1);
       //als
       return partner;

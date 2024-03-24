@@ -25,7 +25,7 @@ function exitChat() {
 }
 
 //calling resize as without this the screen will collapse in windows browser
-resize();
+// resize();
 
 let timeoutId=null;
 function asyncTimer(duration, callback) {
@@ -44,10 +44,10 @@ function clearTimeoutCallback(){
 // });
 
 // Attach an event listener to the window resize event
-window.addEventListener("resize", function () {
-  // Call checkScreenType() when the window is resized
-  resize();
-});
+// window.addEventListener("resize", function () {
+//   // Call checkScreenType() when the window is resized
+//   resize();
+// });
 
 //this will send debug message to be printed on nodejs server
 function debug(msg) {
@@ -56,7 +56,8 @@ function debug(msg) {
 
 
 function resize() {
-  //reinitializing 100% as changing orientation cause instable innerHeight and innerWidth without this
+  debug("resize called");
+  // reinitializing 100% as changing orientation cause instable innerHeight and innerWidth without this
   body.style.height = "100%";
   body.style.width = "100%";
 
@@ -154,7 +155,8 @@ try {
 }
 
 // Attach click event listener to the send button
-sendButton.addEventListener("click", function () {
+sendButton.addEventListener("mousedown", function (e) {
+  e.preventDefault();
   console.log("sendButton clicked");
   sendMessage();
 });
@@ -232,8 +234,6 @@ function addMessage(name, text, isSelf) {
   messageContainer.appendChild(message);
   messageListDiv.appendChild(messageContainer);
   messageListDiv.scrollTop = messageListDiv.scrollHeight;
-  mainDiv.scrollTop = messageField.offsetTop;
-
 }
 
 function addStatus(status) {
@@ -245,8 +245,6 @@ function addStatus(status) {
   statusContainer.appendChild(strongElement);
   messageListDiv.appendChild(statusContainer);
   messageListDiv.scrollTop = messageListDiv.scrollHeight;
-  mainDiv.scrollTop = messageField.offsetTop;
-
 }
 
 

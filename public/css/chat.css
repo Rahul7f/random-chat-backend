@@ -7,6 +7,7 @@ body {
   justify-content: center;
   align-items: center;
   width: 100%;
+  height: 100%;
   margin: 0;
   background-image: url(../assets/bg-chat2.jpg);
 }
@@ -15,6 +16,13 @@ body {
   display: flex;
   margin-bottom: 10px;
   /* Adjust the margin between chat bubbles */
+}
+
+.messagesContainer{
+  overflow: auto;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
 }
 
 .selfmessage {

@@ -24,19 +24,14 @@
   <div class="center" id="center">
     <!-- <h2 id="status">Connecting to Server</h2> -->
 
-    <div id="messages" style="
-     overflow: auto;
-      display: flex;
-      flex-direction: column;
-      justify-content: end;
-      height: 100%;">
-
+    <div id="messages" class="messagesContainer">
+      <div style="height: 100vh;"></div>
     </div>
 
     <div style="display: flex; overflow: auto;">
       <button id="esc" class="btn btn-custom">NEW</button>
 
-      <input class="input-custom" style="flex-grow: 1; resize: both;overflow: auto;" id="messageInput" type="text"
+      <input class="input-custom" style="flex: 1;overflow: auto;" id="messageInput" type="text"
         placeholder="Type your message..." />
 
       <button id="camera" class="btn btn-custom">

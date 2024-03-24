@@ -2,30 +2,38 @@
 same user is not allowed to connect by self.
 
 CONNECT NEW AND ESC -- ADD STATUS IN MESSAGE CONTAINER
+ADD a condition to use a default stranger name when someone directly opens chat page
+(What if gender and interest are null - SOLUTION DISCUSSED ON CALL)
+
+MATCH WITH Interest --  as discussed  over call.
+
+remove user if disconnected in any case
+CASE:  exit , closed the tab, closed the browser ,internet broke
+
+align all the message in bottom
+
+FAV icon on main page
+
 
 
 
 --------------------------------------------PENDING----------------------------------------------------
 
-ADD a condition to use a default stranger name when someone directly opens chat page
-(What if gender and interest are null - SOLUTION DISCUSSED ON CALL)
-
-MATCH WITH Interest --  as discussed  over call.
-ISSUE AFTER CANCELLING WHILE SEARCHING WITH INTRESTS
-
-remove user if disconnected in any case
-CASE:  exit , closed the tab, closed the browser ,internet broke
-
 reloaded the tab (save and reuse socket and connect to same participant)
 
 send image in chat
 
-align all the message in bottom
-
 add T&C
 
-FAV icon on main page
 make gender and interest optional
+
+
+## important
+
+scroll issue
+show status in toast
+remove previous history after new connection
+
 
 
 

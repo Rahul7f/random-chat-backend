@@ -8,6 +8,7 @@ var toggleConnectionButton = document.getElementById("esc");
 var camera = document.getElementById("camera");
 var centerDiv = document.getElementById("center");
 var body = document.getElementById("body");
+var mainDiv = document.getElementById("center");
 var connectedUserObject = null;
 var selfUserObject = null;
 
@@ -231,6 +232,8 @@ function addMessage(name, text, isSelf) {
   messageContainer.appendChild(message);
   messageListDiv.appendChild(messageContainer);
   messageListDiv.scrollTop = messageListDiv.scrollHeight;
+  mainDiv.scrollTop = messageField.offsetTop;
+
 }
 
 function addStatus(status) {
@@ -242,6 +245,8 @@ function addStatus(status) {
   statusContainer.appendChild(strongElement);
   messageListDiv.appendChild(statusContainer);
   messageListDiv.scrollTop = messageListDiv.scrollHeight;
+  mainDiv.scrollTop = messageField.offsetTop;
+
 }
 
 

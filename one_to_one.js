@@ -1,7 +1,3 @@
-// server.js
-
-
-
 const express = require("express");
 const http = require("http");
 const socketIo = require("socket.io");
@@ -10,14 +6,11 @@ const bodyParser = require("body-parser");
 const cors = require("cors");
 
 const app = express();
-// app.use(cors({ origin: 'http://strangerchat.fun' }))
+app.use(cors({ origin: 'https://strangerchat.fun' }))
 const server = http.createServer(app);
 
 const io = socketIo(server);
-//
-// io.set(cors({origin: 'http://strangerchat.fun'}))
-//
-// io.set('origins', 'http://strangerchat.fun');
+
 
 
 const PORT = process.env.PORT || 3000;

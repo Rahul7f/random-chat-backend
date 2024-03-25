@@ -78,6 +78,22 @@ app.get("/chat", (req, res) => {
   res.sendFile(path.join(__dirname, "public/html", "chat.html"));
 });
 
+app.get("/terms", (req, res) => {
+  res.sendFile(path.join(__dirname, "public/html", "terms.html"));
+});
+app.get("/policy", (req, res) => {
+  res.sendFile(path.join(__dirname, "public/html", "policy.html"));
+});
+app.get("/guideline", (req, res) => {
+  res.sendFile(path.join(__dirname, "public/html", "guideline.html"));
+});
+
+app.get("/comingsoon", (req, res) => {
+  res.sendFile(path.join(__dirname, "public/html", "comingsoon.html"));
+});
+
+
+
 // Socket.io logic
 io.on("connection", (socket) => {
   var isConnected=false;

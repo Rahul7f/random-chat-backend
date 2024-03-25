@@ -12,6 +12,9 @@ var mainDiv = document.getElementById("center");
 var connectedUserObject = null;
 var selfUserObject = null;
 
+
+var isFindingMatch=false;
+
 // if user close tab, then exit the user session
 window.addEventListener("beforeunload", function (e) {
   exitChat();
@@ -21,6 +24,7 @@ function exitChat() {
   console.log("exitChat called");
   socket.emit("exit", selfUserObject, connectedUserObject);
   connectedUserObject = null;
+  isFindingMatch=false;
   addStatus("You've exited the chat");
 }
 
@@ -79,34 +83,35 @@ socket.on("connect", () => {
   // Retrieving data:
   let text = localStorage.getItem("userdata");
   let userObject = null;
-  console.log
+  
   if (text) {
     console.log("Data found in localstorage");
     userObject = JSON.parse(text);
-
+    userObject.random=false;
   } else {
     console.log("No data found in localstorage");
     userObject = {
-      name: "Stranger", gender: null, interest: null
+      name: "Stranger", gender: null, interest: null, random:true,
     };
   }
   userObject.id = socket.id;
   selfUserObject = userObject;
   exitOrConnectButton();
-
 });
 // this will notify if someone is connected
 socket.on("connectToUser", (data) => {
-  clearTimeoutCallback();
+  clearMessagesContainer();
+  updateIsConnectedStatus(true);
   connectedUserObject = data;
   addStatus(data.name + " connected");
+  isFindingMatch=false;
 });
 
 socket.on("partnerLeft", (otheruser) => {
   addStatus("user " + otheruser.name + " left");
   connectedUserObject = null;
   toggleConnectionButton.innerText = "NEW";
-  isNewButtonPressed = false;
+  isFindingMatch = false;
 });
 
 // Receive message from server and display it
@@ -114,17 +119,18 @@ socket.on("message", (data) => {
   addMessage(connectedUserObject.name, data.message, false);
 });
 
+socket.on("status",(status)=>{
+  addStatus(status);
+})
 
 function exitOrConnectButton() {
-  clearTimeoutCallback();
-  if (connectedUserObject || (connectedUserObject == null && isNewButtonPressed)) {
+  console.log("exitorconnect",JSON.stringify(connectedUserObject),isFindingMatch);
+  if (connectedUserObject || isFindingMatch) {
     exitChat();
     toggleConnectionButton.innerText = "New";
-    isNewButtonPressed = false;
   }
-  else if (connectedUserObject == null && !isNewButtonPressed) {
-    isNewButtonPressed = true;
-    isUsingPreferenceForMatching = true;
+  else if (connectedUserObject == null && !isFindingMatch) {
+    clearMessagesContainer();
     connectChat();
     toggleConnectionButton.innerText = "ESC";
   }
@@ -176,12 +182,9 @@ function showMessage(recipient) {
   Toastify({
     text: recipient,
     duration: 3000,
-    destination: "https://github.com/apvarun/toastify-js",
-    newWindow: true,
-
     gravity: "top", // `top` or `bottom`
     position: "right", // `left`, `center` or `right`
-    stopOnFocus: true, // Prevents dismissing of toast on hover
+    stopOnFocus: false, // Prevents dismissing of toast on hover
     style: {
       background: "#32CD32",
     },
@@ -189,26 +192,48 @@ function showMessage(recipient) {
   }).showToast();
 }
 
-let isUsingPreferenceForMatching = true;
+function updateIsConnectedStatus(status){
+  socket.emit("isConnected",status)
+}
+
+function addPreferenceCheckbox() {
+
+  const checkboxContainer = document.createElement("div");
+  checkboxContainer.setAttribute("style", "text-align: center; align-self: center;");
+
+
+  if (selfUserObject.interest && selfUserObject.gender) {
+    const checkbox = document.createElement("input");
+    checkbox.setAttribute("type", "checkbox");
+    checkbox.setAttribute("id", "matchingPrefs");
+    checkbox.setAttribute("onclick", "onPrefUpdate(this);");
+    checkbox.checked=!selfUserObject.random;
+    const checkBoxText = document.createElement("strong");
+    checkBoxText.innerText = " Match using Interests?";
+
+    checkboxContainer.appendChild(checkbox);
+    checkboxContainer.appendChild(checkBoxText);
+  } else {
+    const updateInterest = document.createElement("a")
+    updateInterest.setAttribute("href", "/");
+    updateInterest.innerText = "Update interests to use matchmaking"
+    checkboxContainer.appendChild(updateInterest);
+  }
+
+  messageListDiv.appendChild(checkboxContainer);
+}
+
+function onPrefUpdate(cb) {
+  console.log("clicked on Pref Udpate");
+  selfUserObject.random = !cb.checked;
+  console.log(JSON.stringify(selfUserObject));
+}
 
 function connectChat() {
   console.log("userConnectRequest Called");
-  if (isUsingPreferenceForMatching && selfUserObject.gender && selfUserObject.interest) {
-    socket.emit("userConnectRequestwithInterest", selfUserObject);
-    addStatus("waiting for user as per your preference");
-    asyncTimer(5000, () => {
-      if (!connectedUserObject) {
-        socket.emit("removeMeFromInterestMatchmaking", selfUserObject);
-        addStatus("unable to find your match trying in random matching")
-        isUsingPreferenceForMatching = false;
-        connectChat();
-      }
-    })
-  } else {
-    socket.emit("userConnectRequest", selfUserObject);
-    addStatus("waiting for user");
-  }
-  // currentUserName = messageInput; kyo h ye line?
+  addPreferenceCheckbox();
+  isFindingMatch=true;
+  socket.emit("userConnectRequest", selfUserObject);
 }
 
 
@@ -237,6 +262,7 @@ function addMessage(name, text, isSelf) {
 }
 
 function addStatus(status) {
+  showMessage(status);
   const statusContainer = document.createElement("div");
   statusContainer.setAttribute("style", "text-align: center; align-self: center;");
   const strongElement = document.createElement("strong");
@@ -247,6 +273,12 @@ function addStatus(status) {
   messageListDiv.scrollTop = messageListDiv.scrollHeight;
 }
 
+function clearMessagesContainer(){
+  messageListDiv.innerHTML=null;
+  const emptyDiv = document.createElement("div");
+  emptyDiv.setAttribute("style","height: 100vh;");
+  messageListDiv.appendChild(emptyDiv);
+}
 
 //exception handling callbacks
 //need to store the socket id in case if the page refreshes or the server reconnects this can be helpful

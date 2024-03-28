@@ -1,38 +1,52 @@
 --------------------------------------------DONE----------------------------------------------------
 same user is not allowed to connect by self.
-
 CONNECT NEW AND ESC -- ADD STATUS IN MESSAGE CONTAINER
 ADD a condition to use a default stranger name when someone directly opens chat page
 (What if gender and interest are null - SOLUTION DISCUSSED ON CALL)
-
 MATCH WITH Interest --  as discussed  over call.
-
 remove user if disconnected in any case
 CASE:  exit , closed the tab, closed the browser ,internet broke
-
 align all the message in bottom
-
 FAV icon on main page
-
-
-
-
---------------------------------------------PENDING----------------------------------------------------
-
-reloaded the tab (save and reuse socket and connect to same participant)
-
-send image in chat
-
 add T&C
-
-make gender and interest optional
-
-
-## important
-
 scroll issue
 show status in toast
 remove previous history after new connection
+
+
+--------------------------------------------PENDING----------------------------------------------------
+exit status on android tab closed.
+make gender and interest optional
+bot  - aadarsh/rahul
+change content - rahul
+
+sound/vibration on message and sound/vibration on connect
+ADS - last after stable release.
+
+
+--------------------------------------------FUTURE TASK----------------------------------------------------
+reloaded the tab (save and reuse socket and connect to same participant)
+send image in chat.
+add Emoji option.  - https://www.npmjs.com/package/emoji-picker-element
+GIF option. - https://www.npmjs.com/package/gif-picker-react
+first message options.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
